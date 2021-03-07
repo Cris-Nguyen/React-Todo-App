@@ -1,45 +1,17 @@
-import React, { useState } from 'react'
+import React from 'react'
 import TodoForm from './TodoForm'
 import Todo from './Todo'
+import { connect, useSelector } from "react-redux"
+import { addTodo, updateTodo, removeTodo, completeTodo } from "../redux/actions"
 
-function TodoList() {
-    const [todos, setTodos] = useState([]);
-
-    const addTodo = todo => {
-        if (!todo.text || /^\s*$/.test(todo.text)) {
-            return;
-        }
-        const subTodos = [todo, ...todos];
-        setTodos(subTodos);      
-    }
-
-    const updateTodo = (todoId, newValue) => {
-        if (!newValue.text || /^\s*$/.test(newValue.text)) {
-            return;
-        }
-        setTodos(prev => prev.map(item => (item.id === todoId ? newValue : item)));
-    }
-
-    const removeTodo = id => {
-        const removeArr = [...todos].filter(todo => todo.id !== id);
-        setTodos(removeArr);
-    }
-
-    const completeTodo = id => {
-        let updatedTodos = todos.map(todo => {
-            if (todo.id === id) {
-                todo.isComplete = !todo.isComplete;
-            }
-            return todo;
-        });
-        setTodos(updatedTodos);
-    }
-
+function TodoList(props) {
+    const todos = useSelector(state => state.todos.todos);
+    
     return (
         <div>
-            <h1>Daily tasks</h1>
+            <h1>Daily tasks App</h1>
             <TodoForm onSubmit={addTodo} />
-            <Todo 
+            <Todo
                 todos={todos}
                 updateTodo={updateTodo}
                 completeTodo={completeTodo}
@@ -49,4 +21,8 @@ function TodoList() {
     )
 }
 
-export default TodoList;
+// export default TodoList;
+export default connect(
+    null,
+    { addTodo, updateTodo, removeTodo, completeTodo }
+)(TodoList);
